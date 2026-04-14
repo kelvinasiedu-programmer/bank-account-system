@@ -3,197 +3,488 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Bank Account System</title>
+<title>Ledger — Bank Account System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  /* Flat theme — one background, one accent. */
+  /* Flat fintech theme — one background, one lime accent. */
   :root{
-    --bg:#0F0F12;
-    --surface:#16161B;
-    --border:#262630;
-    --border-hi:#3A3A46;
-    --ink:#ECECF1;
-    --ink-dim:#9A9AA6;
-    --ink-mute:#6A6A76;
-    --accent:#7C5CFC;
-    --radius:10px;
+    --bg:#0B0C0E;
+    --surface:#14161A;
+    --surface-2:#1B1E23;
+    --border:#24272D;
+    --border-hi:#30343B;
+    --ink:#F2F3F5;
+    --ink-dim:#9BA0A7;
+    --ink-mute:#60656D;
+    --accent:#C2F24A;       /* lime */
+    --accent-ink:#0B0C0E;   /* ink-on-lime */
+    --danger:#F26A6A;
+    --radius:14px;
+    --radius-sm:10px;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0;height:100%}
+  html,body{margin:0;padding:0}
   body{
     font-family:'Inter',system-ui,sans-serif;
     background:var(--bg);
     color:var(--ink);
     min-height:100vh;
     letter-spacing:-0.01em;
+    -webkit-font-smoothing:antialiased;
   }
-  .shell{max-width:1200px;margin:0 auto;padding:32px 28px 80px}
-  header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
-  .brand{display:flex;align-items:center;gap:12px}
-  .logo{
-    width:42px;height:42px;border-radius:var(--radius);
-    background:var(--accent);
-    display:grid;place-items:center;font-weight:800;color:#fff;
-    font-family:'JetBrains Mono',monospace;font-size:18px;
+  .shell{max-width:1280px;margin:0 auto;padding:28px 24px 64px}
+
+  /* ── Header ───────────────────────────────────────────── */
+  header{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:28px;gap:16px;flex-wrap:wrap;
   }
-  .brand h1{margin:0;font-size:20px;font-weight:700;letter-spacing:-0.02em}
-  .brand p{margin:2px 0 0;color:var(--ink-dim);font-size:12px}
-  .pill{
-    display:inline-flex;align-items:center;gap:8px;
-    padding:7px 14px;border:1px solid var(--border);
-    border-radius:999px;font-size:12px;color:var(--ink-dim);
-    background:var(--surface);
+  .greet h1{
+    margin:0;font-size:26px;font-weight:700;letter-spacing:-0.02em;
   }
-  .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
-  .grid{display:grid;grid-template-columns:1.1fr 1fr;gap:20px}
-  @media (max-width:900px){.grid{grid-template-columns:1fr}}
+  .greet h1 em{font-style:normal;color:var(--accent)}
+  .greet p{margin:4px 0 0;color:var(--ink-dim);font-size:13px}
+  .header-tools{display:flex;align-items:center;gap:10px}
+  .search{
+    display:flex;align-items:center;gap:8px;
+    padding:9px 14px;background:var(--surface);
+    border:1px solid var(--border);border-radius:999px;
+    min-width:240px;
+  }
+  .search input{
+    border:none;background:transparent;color:var(--ink);
+    width:100%;font-size:13px;font-family:inherit;outline:none;
+  }
+  .search svg{width:14px;height:14px;color:var(--ink-mute)}
+  .pill-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:9px 14px;border:1px solid var(--border);
+    border-radius:999px;font-size:12px;color:var(--ink);
+    background:var(--surface);cursor:pointer;font-family:inherit;
+    transition:border-color .15s, background .15s;
+  }
+  .pill-btn:hover{border-color:var(--accent)}
+  .pill-btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+  .pill-btn.primary:hover{filter:brightness(1.05)}
+  .avatar{
+    width:38px;height:38px;border-radius:50%;
+    background:var(--surface);border:1px solid var(--border);
+    display:grid;place-items:center;font-weight:700;font-size:13px;
+    color:var(--ink);
+  }
+  .status-dot{
+    width:8px;height:8px;border-radius:50%;background:var(--accent);
+    box-shadow:0 0 0 3px rgba(194,242,74,0.15);
+  }
+
+  /* ── KPI row ───────────────────────────────────────────── */
+  .kpi-row{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:14px;
+    margin-bottom:20px;
+  }
+  @media (max-width:900px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+  .kpi{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);padding:18px;
+    position:relative;
+  }
+  .kpi.hero{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .kpi .k{
+    color:var(--ink-mute);font-size:11px;
+    text-transform:uppercase;letter-spacing:0.1em;font-weight:500;
+  }
+  .kpi.hero .k{color:rgba(11,12,14,0.65)}
+  .kpi .v{
+    margin-top:10px;font-size:24px;font-weight:700;
+    font-family:'JetBrains Mono',monospace;letter-spacing:-0.02em;
+  }
+  .kpi .delta{
+    display:inline-flex;align-items:center;gap:4px;
+    margin-top:8px;font-size:11px;font-weight:500;
+    padding:3px 8px;border-radius:999px;
+    background:var(--surface-2);color:var(--accent);
+    border:1px solid var(--border);
+  }
+  .kpi.hero .delta{
+    background:rgba(11,12,14,0.12);color:var(--accent-ink);
+    border-color:rgba(11,12,14,0.2);
+  }
+  .kpi .delta.down{color:var(--danger)}
+
+  /* ── Main grid ─────────────────────────────────────────── */
+  .main{display:grid;grid-template-columns:1.6fr 1fr;gap:20px}
+  @media (max-width:1000px){.main{grid-template-columns:1fr}}
+  .col{display:flex;flex-direction:column;gap:20px}
+
+  /* ── Cards ─────────────────────────────────────────────── */
   .card{
     background:var(--surface);border:1px solid var(--border);
     border-radius:var(--radius);padding:22px;
   }
-  .card h2{margin:0 0 4px;font-size:15px;font-weight:600;letter-spacing:-0.01em}
-  .card .sub{color:var(--ink-dim);font-size:12px;margin-bottom:18px}
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-  @media (max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}}
-  .stat{
-    background:var(--surface);border:1px solid var(--border);
-    border-radius:var(--radius);padding:16px;
+  .card-head{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:16px;gap:10px;
   }
-  .stat .k{color:var(--ink-mute);font-size:11px;text-transform:uppercase;letter-spacing:0.08em}
-  .stat .v{margin-top:6px;font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace}
-  .stat.accent .v{color:var(--accent)}
-  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  label{display:block;font-size:12px;color:var(--ink-dim);margin-bottom:6px}
-  input, select{
-    width:100%;padding:11px 13px;border-radius:var(--radius);
+  .card-head h3{margin:0;font-size:15px;font-weight:600;letter-spacing:-0.01em}
+  .card-head .sub{color:var(--ink-dim);font-size:12px}
+
+  /* ── Tabs ──────────────────────────────────────────────── */
+  .tabs{
+    display:inline-flex;gap:2px;padding:4px;
+    background:var(--surface-2);border:1px solid var(--border);
+    border-radius:999px;
+  }
+  .tab{
+    padding:7px 14px;font-size:12px;font-weight:500;
+    color:var(--ink-dim);background:transparent;
+    border:none;border-radius:999px;cursor:pointer;font-family:inherit;
+    transition:color .15s, background .15s;
+  }
+  .tab.active{background:var(--accent);color:var(--accent-ink);font-weight:600}
+  .tab:not(.active):hover{color:var(--ink)}
+
+  /* ── Income chart ──────────────────────────────────────── */
+  .chart{
+    display:flex;align-items:flex-end;gap:10px;
+    height:200px;margin-top:4px;
+  }
+  .bar-col{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;
+  }
+  .bar{
+    width:100%;max-width:28px;border-radius:6px 6px 2px 2px;
+    background:var(--accent);
+    transition:transform .2s;
+  }
+  .bar.dim{background:var(--surface-2);border:1px solid var(--border)}
+  .bar-col:hover .bar{transform:translateY(-3px)}
+  .bar-lbl{font-size:10px;color:var(--ink-mute);letter-spacing:0.08em;text-transform:uppercase}
+  .chart-legend{
+    display:flex;gap:16px;margin-top:16px;padding-top:16px;
+    border-top:1px solid var(--border);
+  }
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink-dim)}
+  .legend-dot{width:8px;height:8px;border-radius:2px}
+
+  /* ── Payment-card visual ───────────────────────────────── */
+  .pay-card{
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:22px;
+    position:relative;
+    min-height:180px;
+    display:flex;flex-direction:column;justify-content:space-between;
+  }
+  .pay-card.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .pay-card-top{display:flex;justify-content:space-between;align-items:flex-start}
+  .pay-brand{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.15em;font-weight:500;opacity:0.8;text-transform:uppercase}
+  .pay-chip{
+    width:32px;height:24px;border-radius:4px;
+    background:rgba(11,12,14,0.15);
+    display:grid;place-items:center;
+  }
+  .pay-card:not(.primary) .pay-chip{background:var(--border)}
+  .pay-balance{font-size:11px;letter-spacing:0.08em;text-transform:uppercase;opacity:0.7;margin-bottom:4px}
+  .pay-number{
+    font-family:'JetBrains Mono',monospace;
+    font-size:20px;font-weight:600;letter-spacing:0.08em;
+    margin-bottom:12px;
+  }
+  .pay-bottom{display:flex;justify-content:space-between;align-items:flex-end;font-size:11px}
+  .pay-holder{font-weight:600;letter-spacing:0.05em;text-transform:uppercase;font-size:11px}
+  .pay-exp{font-family:'JetBrains Mono',monospace;font-size:11px;opacity:0.85}
+
+  /* ── Monthly spending ──────────────────────────────────── */
+  .progress-wrap{margin-top:4px}
+  .progress-bar{
+    height:10px;background:var(--surface-2);border:1px solid var(--border);
+    border-radius:999px;overflow:hidden;margin-bottom:10px;
+  }
+  .progress-fill{
+    height:100%;background:var(--accent);border-radius:999px;
+    transition:width .4s;
+  }
+  .progress-meta{display:flex;justify-content:space-between;font-size:12px}
+  .progress-meta .current{font-family:'JetBrains Mono',monospace;font-weight:600}
+  .progress-meta .goal{color:var(--ink-dim);font-family:'JetBrains Mono',monospace}
+
+  /* ── Bills / accounts table ────────────────────────────── */
+  .bills{display:flex;flex-direction:column;gap:2px}
+  .bill{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 4px;cursor:pointer;
+    border-bottom:1px solid var(--border);
+    transition:background .15s;
+  }
+  .bill:hover{background:var(--surface-2);margin:0 -12px;padding:12px 16px;border-radius:var(--radius-sm);border-bottom-color:transparent}
+  .bill:last-child{border-bottom:none}
+  .bill-icon{
+    width:36px;height:36px;border-radius:10px;
+    background:var(--surface-2);border:1px solid var(--border);
+    display:grid;place-items:center;font-weight:700;font-size:12px;
+    color:var(--ink);flex-shrink:0;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .bill-icon.savings{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+  .bill-main{flex:1;min-width:0}
+  .bill-name{font-weight:500;font-size:13px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bill-meta{color:var(--ink-mute);font-size:11px;font-family:'JetBrains Mono',monospace}
+  .bill-amount{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;text-align:right;flex-shrink:0}
+  .bill-amount.neg{color:var(--danger)}
+  .empty{color:var(--ink-mute);font-size:12px;padding:28px 0;text-align:center}
+
+  /* ── Account detail / slide-in ─────────────────────────── */
+  .overlay{
+    position:fixed;inset:0;background:rgba(11,12,14,0.6);
+    z-index:50;opacity:0;pointer-events:none;transition:opacity .2s;
+  }
+  .overlay.open{opacity:1;pointer-events:auto}
+  .sheet{
+    position:fixed;top:0;right:0;bottom:0;
+    width:min(440px,100%);background:var(--surface);
+    border-left:1px solid var(--border);
+    z-index:51;transform:translateX(100%);
+    transition:transform .25s ease;
+    padding:28px 24px;overflow-y:auto;
+  }
+  .sheet.open{transform:translateX(0)}
+  .sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+  .sheet-head h2{margin:0;font-size:18px;font-weight:600}
+  .close-btn{
+    width:32px;height:32px;border-radius:50%;
+    background:var(--surface-2);border:1px solid var(--border);
+    color:var(--ink);cursor:pointer;font-family:inherit;font-size:16px;
+    display:grid;place-items:center;
+  }
+  .close-btn:hover{border-color:var(--accent)}
+
+  /* ── Forms ─────────────────────────────────────────────── */
+  label{display:block;font-size:11px;color:var(--ink-dim);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.08em;font-weight:500}
+  input,select{
+    width:100%;padding:11px 13px;border-radius:var(--radius-sm);
     background:var(--bg);color:var(--ink);
     border:1px solid var(--border);font-size:14px;
     font-family:inherit;transition:border-color .15s;
   }
-  input:focus, select:focus{outline:none;border-color:var(--accent)}
+  input:focus,select:focus{outline:none;border-color:var(--accent)}
   .field{margin-bottom:14px}
-  button{
-    width:100%;padding:12px 16px;border:none;border-radius:var(--radius);
-    background:var(--accent);color:#fff;font-weight:600;font-size:14px;
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .btn{
+    width:100%;padding:12px 16px;border:none;
+    border-radius:var(--radius-sm);background:var(--accent);
+    color:var(--accent-ink);font-weight:600;font-size:13px;
     cursor:pointer;font-family:inherit;transition:filter .15s;
   }
-  button:hover{filter:brightness(1.1)}
-  button.ghost{background:transparent;border:1px solid var(--border-hi);color:var(--ink)}
-  button.ghost:hover{border-color:var(--accent);color:var(--accent);filter:none}
-  button.danger{background:#E05858}
-  button.tiny{width:auto;padding:7px 11px;font-size:12px}
-  .accts{display:flex;flex-direction:column;gap:10px;max-height:460px;overflow:auto;padding-right:4px}
-  .acct{
-    border:1px solid var(--border);border-radius:var(--radius);padding:14px;
-    background:var(--bg);cursor:pointer;transition:border-color .15s;
+  .btn:hover{filter:brightness(1.05)}
+  .btn.ghost{background:transparent;border:1px solid var(--border-hi);color:var(--ink);font-weight:500}
+  .btn.ghost:hover{border-color:var(--accent);color:var(--accent);filter:none}
+  .btn.danger{background:transparent;border:1px solid var(--danger);color:var(--danger)}
+  .btn.danger:hover{background:var(--danger);color:#fff;filter:none}
+  .btn-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+  .btn-row .btn{padding:10px 12px;font-size:12px}
+
+  /* ── Sheet-content chunks ──────────────────────────────── */
+  .sheet-hero{
+    background:var(--accent);color:var(--accent-ink);
+    padding:22px;border-radius:var(--radius);margin-bottom:18px;
   }
-  .acct:hover{border-color:var(--accent)}
-  .acct.selected{border-color:var(--accent)}
-  .acct-row{display:flex;justify-content:space-between;align-items:center;gap:10px}
-  .acct-name{font-weight:600;font-size:14px}
-  .acct-type{
-    display:inline-block;margin-top:4px;padding:2px 8px;
-    font-size:10px;letter-spacing:0.08em;text-transform:uppercase;
-    border-radius:999px;border:1px solid var(--border-hi);color:var(--ink-dim);
-  }
-  .acct-type.savings{color:var(--accent);border-color:var(--accent)}
-  .acct-type.checking{color:var(--ink);border-color:var(--border-hi)}
-  .acct-balance{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700}
-  .acct-balance.neg{color:#E05858}
-  .acct-id{color:var(--ink-mute);font-size:11px;font-family:'JetBrains Mono',monospace;margin-top:6px}
-  .detail{min-height:300px}
-  .detail .empty{color:var(--ink-mute);font-size:13px;text-align:center;padding:50px 0}
-  .detail .selected-head{margin-bottom:14px}
-  .detail h3{margin:0;font-size:17px}
-  .actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+  .sheet-hero .label{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;opacity:0.7;font-weight:500}
+  .sheet-hero .val{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;margin-top:6px;letter-spacing:-0.02em}
+  .sheet-hero.neg{background:var(--danger);color:#fff}
+  .sheet-meta{display:flex;gap:14px;font-size:12px;color:var(--ink-dim);margin-bottom:14px}
+  .sheet-meta b{color:var(--ink);font-weight:600}
   .amt-row{display:flex;gap:8px;margin-bottom:14px}
   .amt-row input{flex:1}
-  .amt-row button{width:auto;padding:10px 18px}
-  .history{max-height:260px;overflow:auto;border-top:1px solid var(--border);padding-top:12px}
+
+  .history{max-height:300px;overflow-y:auto;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+  .history-title{
+    font-size:11px;color:var(--ink-dim);margin-bottom:10px;
+    text-transform:uppercase;letter-spacing:0.08em;font-weight:500;
+  }
   .tx{
-    display:flex;justify-content:space-between;align-items:center;
-    padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;
+    display:flex;justify-content:space-between;align-items:flex-start;
+    padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;gap:10px;
   }
   .tx:last-child{border-bottom:none}
   .tx-type{
-    font-size:10px;letter-spacing:0.08em;text-transform:uppercase;
-    padding:3px 8px;border-radius:999px;border:1px solid var(--border-hi);color:var(--ink-dim);
+    font-size:9px;letter-spacing:0.1em;text-transform:uppercase;
+    padding:3px 7px;border-radius:999px;
+    border:1px solid var(--border-hi);color:var(--ink-dim);
+    font-weight:500;
   }
-  .tx-type.deposit{color:var(--accent);border-color:var(--accent)}
-  .tx-type.interest{color:var(--accent);border-color:var(--accent)}
+  .tx-type.deposit,.tx-type.interest{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
   .tx-type.withdrawal{color:var(--ink);border-color:var(--border-hi)}
-  .tx-type.overdraft_fee{color:#E05858;border-color:#E05858}
-  .tx-type.open{color:var(--ink-mute)}
-  .tx-amt{font-family:'JetBrains Mono',monospace;font-weight:600}
-  .tx-meta{color:var(--ink-mute);font-size:11px;margin-top:2px}
-  .toast{
-    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-    padding:12px 18px;border-radius:var(--radius);background:var(--surface);
-    border:1px solid var(--border);font-size:13px;z-index:1000;
-    opacity:0;transition:opacity .2s;
+  .tx-type.overdraft_fee{color:var(--danger);border-color:var(--danger)}
+  .tx-amt{font-family:'JetBrains Mono',monospace;font-weight:600;text-align:right;white-space:nowrap}
+  .tx-amt.pos{color:var(--accent)}
+  .tx-amt.neg{color:var(--danger)}
+  .tx-meta{color:var(--ink-mute);font-size:11px;margin-top:3px}
+
+  /* ── Modal (open account) ──────────────────────────────── */
+  .modal{
+    position:fixed;inset:0;display:none;
+    background:rgba(11,12,14,0.7);z-index:60;
+    align-items:center;justify-content:center;padding:20px;
   }
-  .toast.show{opacity:1}
-  .toast.error{border-color:#E05858;color:#E05858}
+  .modal.open{display:flex}
+  .modal-card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);padding:26px;
+    width:100%;max-width:420px;
+  }
+
+  /* ── Toast ─────────────────────────────────────────────── */
+  .toast{
+    position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(10px);
+    padding:12px 18px;border-radius:var(--radius-sm);background:var(--surface);
+    border:1px solid var(--border);font-size:13px;z-index:1000;
+    opacity:0;transition:opacity .2s, transform .2s;pointer-events:none;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.error{border-color:var(--danger);color:var(--danger)}
   .toast.success{border-color:var(--accent);color:var(--accent)}
-  ::-webkit-scrollbar{width:8px;height:8px}
-  ::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:4px}
+
+  /* ── Scrollbar ─────────────────────────────────────────── */
+  ::-webkit-scrollbar{width:6px;height:6px}
+  ::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:3px}
   ::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
   footer{margin-top:40px;text-align:center;color:var(--ink-mute);font-size:12px}
   footer a{color:var(--accent);text-decoration:none}
 </style>
 </head>
 <body>
 <div class="shell">
+
+  <!-- ═══════════════════ Header ═══════════════════ -->
   <header>
-    <div class="brand">
-      <div class="logo">$</div>
-      <div>
-        <h1>Bank Account System</h1>
-        <p>Tiered-interest savings & overdraft-enabled checking · FastAPI + OOP</p>
-      </div>
+    <div class="greet">
+      <h1>Good Morning, <em id="greet-name">Friend</em></h1>
+      <p>Here's your financial overview for today.</p>
     </div>
-    <div class="pill"><span class="dot"></span> <span id="status-text">Connected</span></div>
+    <div class="header-tools">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="search" placeholder="Search accounts" />
+      </div>
+      <button class="pill-btn" id="apply-all-btn" title="Apply tiered interest to all savings">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74"/><path d="M21 3v6h-6"/></svg>
+        Apply Interest
+      </button>
+      <button class="pill-btn primary" id="open-modal-btn">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        New Account
+      </button>
+      <div class="avatar" id="avatar">K</div>
+    </div>
   </header>
 
-  <div class="stats" id="stats">
-    <div class="stat accent"><div class="k">Total Assets</div><div class="v" id="s-assets">$0.00</div></div>
-    <div class="stat"><div class="k">Accounts</div><div class="v" id="s-total">0</div></div>
-    <div class="stat"><div class="k">Savings</div><div class="v" id="s-savings">0</div></div>
-    <div class="stat"><div class="k">Checking</div><div class="v" id="s-checking">0</div></div>
+  <!-- ═══════════════════ KPI row ═══════════════════ -->
+  <div class="kpi-row">
+    <div class="kpi hero">
+      <div class="k">Total Assets</div>
+      <div class="v" id="k-assets">$0.00</div>
+      <span class="delta" id="k-assets-delta">+0.0%</span>
+    </div>
+    <div class="kpi">
+      <div class="k">Total Accounts</div>
+      <div class="v" id="k-total">0</div>
+      <span class="delta" id="k-total-delta">—</span>
+    </div>
+    <div class="kpi">
+      <div class="k">Savings</div>
+      <div class="v" id="k-savings">0</div>
+      <span class="delta">tiered 3–7%</span>
+    </div>
+    <div class="kpi">
+      <div class="k">Checking</div>
+      <div class="v" id="k-checking">0</div>
+      <span class="delta">overdraft-enabled</span>
+    </div>
   </div>
 
-  <div class="grid">
-    <div class="card">
-      <h2>Open New Account</h2>
-      <p class="sub">Create a savings or checking account. Savings earn tiered interest (3 / 5 / 7%).</p>
-      <div class="field">
-        <label for="holder">Account Holder</label>
-        <input id="holder" placeholder="Jane Doe" />
-      </div>
-      <div class="row">
-        <div class="field">
-          <label for="atype">Account Type</label>
-          <select id="atype">
-            <option value="savings">Savings</option>
-            <option value="checking">Checking</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="initial">Initial Deposit ($)</label>
-          <input id="initial" type="number" min="0" step="0.01" value="0" />
-        </div>
-      </div>
-      <button id="create-btn">Open Account</button>
+  <!-- ═══════════════════ Main grid ═══════════════════ -->
+  <div class="main">
 
-      <h2 style="margin-top:24px">Accounts</h2>
-      <p class="sub">Select one to view details and perform transactions.</p>
-      <div class="accts" id="accts"></div>
+    <!-- ── Left column ───────────────────────────────── -->
+    <div class="col">
+
+      <!-- Income chart -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h3>Cash Flow</h3>
+            <div class="sub">Last 12 transactions · net by account</div>
+          </div>
+          <div class="tabs" id="tabs">
+            <button class="tab active" data-tab="all">All</button>
+            <button class="tab" data-tab="deposits">Deposits</button>
+            <button class="tab" data-tab="withdrawals">Withdrawals</button>
+          </div>
+        </div>
+        <div class="chart" id="chart"></div>
+        <div class="chart-legend">
+          <div class="legend-item"><span class="legend-dot" style="background:var(--accent)"></span> Credits</div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--surface-2);border:1px solid var(--border)"></span> Debits</div>
+        </div>
+      </div>
+
+      <!-- Payment cards + tabbed detail -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h3>Primary Accounts</h3>
+            <div class="sub">Your top two balances</div>
+          </div>
+          <button class="pill-btn" id="view-all-btn">View all →</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px" id="pay-cards">
+          <div class="pay-card">
+            <div class="empty" style="padding:20px 0">No accounts yet</div>
+          </div>
+          <div class="pay-card">
+            <div class="empty" style="padding:20px 0">Open one →</div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <div class="card detail" id="detail">
-      <div class="empty">← Select or open an account to see details</div>
+    <!-- ── Right column ──────────────────────────────── -->
+    <div class="col">
+
+      <!-- Monthly activity / progress -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h3>Monthly Activity</h3>
+            <div class="sub">Deposits vs target</div>
+          </div>
+          <span class="status-dot"></span>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+          <div class="progress-meta">
+            <span class="current" id="progress-current">$0</span>
+            <span class="goal">of <span id="progress-goal">$10,000</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bills / accounts list -->
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h3>Accounts</h3>
+            <div class="sub">Tap to manage</div>
+          </div>
+        </div>
+        <div class="bills" id="bills"></div>
+      </div>
+
     </div>
   </div>
 
@@ -202,19 +493,80 @@
   </footer>
 </div>
 
+<!-- ═══════════════════ Slide-in sheet ═══════════════════ -->
+<div class="overlay" id="overlay"></div>
+<aside class="sheet" id="sheet" aria-hidden="true">
+  <div class="sheet-head">
+    <h2 id="sheet-title">Account</h2>
+    <button class="close-btn" id="sheet-close" aria-label="Close">×</button>
+  </div>
+  <div id="sheet-body"></div>
+</aside>
+
+<!-- ═══════════════════ Open-account modal ═══════════════════ -->
+<div class="modal" id="modal" aria-hidden="true">
+  <div class="modal-card">
+    <div class="sheet-head">
+      <h2>Open New Account</h2>
+      <button class="close-btn" id="modal-close">×</button>
+    </div>
+    <div class="field">
+      <label for="holder">Account Holder</label>
+      <input id="holder" placeholder="Jane Doe" />
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label for="atype">Type</label>
+        <select id="atype">
+          <option value="savings">Savings</option>
+          <option value="checking">Checking</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="initial">Initial Deposit</label>
+        <input id="initial" type="number" min="0" step="0.01" value="0" />
+      </div>
+    </div>
+    <button class="btn" id="create-btn">Open Account</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 const API = '/api/v1';
 let accounts = [];
 let selectedId = null;
+let activeTab = 'all';
+let searchQuery = '';
 
-const $ = (s)=>document.querySelector(s);
-function toast(msg, type='info'){
+const $  = (s) => document.querySelector(s);
+const $$ = (s) => document.querySelectorAll(s);
+
+function money(n){
+  return '$'+Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function moneyShort(n){
+  const a = Math.abs(Number(n));
+  if(a>=1e6) return '$'+(n/1e6).toFixed(1)+'M';
+  if(a>=1e3) return '$'+(n/1e3).toFixed(1)+'k';
+  return '$'+Number(n).toFixed(0);
+}
+function initials(name){
+  return (name||'?').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase();
+}
+function firstName(name){
+  return (name||'').trim().split(/\s+/)[0] || 'Friend';
+}
+function escapeHtml(s){
+  return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function toast(msg,type='info'){
   const t = $('#toast');
   t.className = 'toast show ' + type;
   t.textContent = msg;
-  setTimeout(()=>{ t.className = 'toast'; }, 2600);
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>{ t.className = 'toast'; }, 2400);
 }
 async function api(path, opts={}){
   const r = await fetch(API+path, {
@@ -226,85 +578,221 @@ async function api(path, opts={}){
   return data;
 }
 
+// ── Loaders ────────────────────────────────────────────
 async function loadAll(){
   try{
     const [stats, list] = await Promise.all([api('/stats'), api('/accounts')]);
-    $('#s-assets').textContent = '$'+stats.total_assets.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-    $('#s-total').textContent = stats.total_accounts;
-    $('#s-savings').textContent = stats.savings_accounts;
-    $('#s-checking').textContent = stats.checking_accounts;
     accounts = list;
-    renderList();
-    if(selectedId && accounts.find(a=>a.account_id===selectedId)) loadDetail(selectedId);
-    else if(!selectedId) $('#detail').innerHTML = '<div class="empty">← Select or open an account to see details</div>';
-  }catch(e){ toast(e.message,'error'); }
+    renderHeader(stats);
+    renderKPIs(stats);
+    renderPayCards();
+    renderChart();
+    renderProgress(stats);
+    renderBills();
+    if(selectedId && accounts.find(a=>a.account_id===selectedId)) loadSheet(selectedId);
+  }catch(e){
+    toast(e.message,'error');
+  }
 }
 
-function renderList(){
-  const el = $('#accts');
-  if(!accounts.length){ el.innerHTML = '<div class="empty" style="padding:20px 0">No accounts yet. Open one above.</div>'; return; }
-  el.innerHTML = accounts.map(a=>`
-    <div class="acct ${a.account_id===selectedId?'selected':''}" data-id="${a.account_id}">
-      <div class="acct-row">
-        <div>
-          <div class="acct-name">${escapeHtml(a.account_holder)}</div>
-          <span class="acct-type ${a.account_type}">${a.account_type}</span>
+function renderHeader(stats){
+  const greeter = accounts.length ? firstName(accounts[0].account_holder) : 'Friend';
+  $('#greet-name').textContent = greeter;
+  $('#avatar').textContent = accounts.length ? initials(accounts[0].account_holder) : 'K';
+}
+
+function renderKPIs(stats){
+  $('#k-assets').textContent   = money(stats.total_assets);
+  $('#k-total').textContent    = stats.total_accounts;
+  $('#k-savings').textContent  = stats.savings_accounts;
+  $('#k-checking').textContent = stats.checking_accounts;
+
+  // crude "delta": % of assets in savings (tiered-interest earning)
+  const savingsRatio = stats.total_assets > 0
+    ? (accounts.filter(a=>a.account_type==='savings').reduce((s,a)=>s+a.balance,0) / stats.total_assets * 100)
+    : 0;
+  $('#k-assets-delta').textContent = (savingsRatio>=0?'+':'') + savingsRatio.toFixed(1) + '% earning';
+  $('#k-total-delta').textContent  = stats.total_accounts === 0 ? 'Awaiting first account' : 'Active';
+}
+
+function renderPayCards(){
+  const top = accounts.slice().sort((a,b)=>b.balance-a.balance).slice(0,2);
+  const el = $('#pay-cards');
+  if(!top.length){
+    el.innerHTML = `
+      <div class="pay-card"><div class="empty" style="padding:20px 0">No accounts yet</div></div>
+      <div class="pay-card"><div class="empty" style="padding:20px 0">Open one →</div></div>
+    `;
+    return;
+  }
+  el.innerHTML = top.map((a,i)=>{
+    const last4 = a.account_id.replace(/[^0-9]/g,'').slice(-4).padStart(4,'0');
+    return `
+      <div class="pay-card ${i===0?'primary':''}" data-id="${a.account_id}">
+        <div class="pay-card-top">
+          <span class="pay-brand">${a.account_type}</span>
+          <div class="pay-chip">
+            <svg width="14" height="10" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="2" width="20" height="14" rx="2"/><path d="M6 8h4M6 12h8"/>
+            </svg>
+          </div>
         </div>
-        <div class="acct-balance ${a.balance<0?'neg':''}">$${a.balance.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
+        <div>
+          <div class="pay-balance">Balance</div>
+          <div class="pay-number">${money(a.balance)}</div>
+        </div>
+        <div class="pay-bottom">
+          <span class="pay-holder">${escapeHtml(a.account_holder)}</span>
+          <span class="pay-exp">•••• ${last4}</span>
+        </div>
       </div>
-      <div class="acct-id">${a.account_id.slice(0,8)}…</div>
+    `;
+  }).join('');
+  el.querySelectorAll('.pay-card[data-id]').forEach(n=>{
+    n.addEventListener('click', ()=>openSheet(n.dataset.id));
+  });
+}
+
+function renderChart(){
+  // aggregate last 12 transactions across all accounts, sorted by time
+  const txs = [];
+  accounts.forEach(a=>{
+    (a.history||[]).forEach(t=> txs.push({...t, holder:a.account_holder}));
+  });
+  txs.sort((a,b)=> new Date(a.timestamp)-new Date(b.timestamp));
+  let filtered = txs;
+  if(activeTab==='deposits')     filtered = txs.filter(t=> t.type==='deposit' || t.type==='interest');
+  if(activeTab==='withdrawals')  filtered = txs.filter(t=> t.type==='withdrawal' || t.type==='overdraft_fee');
+  const recent = filtered.slice(-12);
+
+  const el = $('#chart');
+  if(!recent.length){
+    el.innerHTML = `<div class="empty" style="flex:1;padding:40px 0">No transactions yet — open an account to get started.</div>`;
+    return;
+  }
+  const max = Math.max(...recent.map(t=>t.amount), 1);
+  el.innerHTML = recent.map((t,i)=>{
+    const h = Math.max(8, (t.amount/max)*180);
+    const isCredit = t.type==='deposit' || t.type==='interest';
+    const lbl = new Date(t.timestamp).toLocaleDateString(undefined,{day:'numeric',month:'short'});
+    return `
+      <div class="bar-col" title="${t.type} ${money(t.amount)} · ${escapeHtml(t.holder||'')}">
+        <div class="bar ${isCredit?'':'dim'}" style="height:${h}px"></div>
+        <div class="bar-lbl">${lbl}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderProgress(stats){
+  // total deposited this month across all accounts
+  const now = new Date();
+  const month0 = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+  let deposited = 0;
+  accounts.forEach(a=>{
+    (a.history||[]).forEach(t=>{
+      if(t.type==='deposit' && new Date(t.timestamp).getTime()>=month0) deposited += t.amount;
+    });
+  });
+  const goal = Math.max(10000, Math.round(stats.total_assets*0.1 / 1000)*1000 || 10000);
+  const pct = Math.min(100, (deposited/goal)*100);
+  $('#progress-fill').style.width = pct.toFixed(1)+'%';
+  $('#progress-current').textContent = money(deposited);
+  $('#progress-goal').textContent = moneyShort(goal);
+}
+
+function renderBills(){
+  const el = $('#bills');
+  const q = searchQuery.toLowerCase().trim();
+  const list = q
+    ? accounts.filter(a => a.account_holder.toLowerCase().includes(q) || a.account_type.includes(q))
+    : accounts;
+
+  if(!list.length){
+    el.innerHTML = `<div class="empty">${accounts.length?'No matches for "'+escapeHtml(searchQuery)+'"':'No accounts yet. Click <b>New Account</b> to open one.'}</div>`;
+    return;
+  }
+  el.innerHTML = list.map(a=>`
+    <div class="bill" data-id="${a.account_id}">
+      <div class="bill-icon ${a.account_type==='savings'?'savings':''}">${initials(a.account_holder)}</div>
+      <div class="bill-main">
+        <div class="bill-name">${escapeHtml(a.account_holder)}</div>
+        <div class="bill-meta">${a.account_type} · ${a.account_id.slice(0,8)}…</div>
+      </div>
+      <div class="bill-amount ${a.balance<0?'neg':''}">${money(a.balance)}</div>
     </div>
   `).join('');
-  el.querySelectorAll('.acct').forEach(n=>n.addEventListener('click', ()=>{
-    selectedId = n.dataset.id; renderList(); loadDetail(selectedId);
-  }));
+  el.querySelectorAll('.bill').forEach(n=> n.addEventListener('click', ()=>openSheet(n.dataset.id)));
 }
 
-async function loadDetail(id){
+// ── Sheet (account detail) ─────────────────────────────
+async function openSheet(id){
+  selectedId = id;
+  $('#overlay').classList.add('open');
+  $('#sheet').classList.add('open');
+  $('#sheet').setAttribute('aria-hidden','false');
+  await loadSheet(id);
+}
+function closeSheet(){
+  selectedId = null;
+  $('#overlay').classList.remove('open');
+  $('#sheet').classList.remove('open');
+  $('#sheet').setAttribute('aria-hidden','true');
+}
+
+async function loadSheet(id){
   try{
     const a = await api('/accounts/'+id);
     const isSavings = a.account_type==='savings';
-    $('#detail').innerHTML = `
-      <div class="selected-head">
-        <h3>${escapeHtml(a.account_holder)}</h3>
-        <span class="acct-type ${a.account_type}">${a.account_type}</span>
+    const isNeg = a.balance < 0;
+    $('#sheet-title').textContent = a.account_holder;
+    $('#sheet-body').innerHTML = `
+      <div class="sheet-hero ${isNeg?'neg':''}">
+        <div class="label">Current Balance</div>
+        <div class="val">${money(a.balance)}</div>
       </div>
-      <div class="stat" style="margin-bottom:14px">
-        <div class="k">Current Balance</div>
-        <div class="v ${a.balance<0?'':'accent'}" style="color:${a.balance<0?'#E05858':'var(--accent)'}">
-          $${a.balance.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
-        </div>
+      <div class="sheet-meta">
+        <span><b>${a.account_type}</b></span>
+        <span>ID <b style="font-family:'JetBrains Mono',monospace">${a.account_id.slice(0,8)}…</b></span>
+        <span>Opened <b>${new Date(a.created_at).toLocaleDateString()}</b></span>
       </div>
       <div class="amt-row">
         <input id="amt" type="number" min="0.01" step="0.01" placeholder="Amount" />
       </div>
-      <div class="actions">
-        <button class="ghost" id="btn-deposit">Deposit</button>
-        <button class="ghost" id="btn-withdraw">Withdraw</button>
-        ${isSavings?'<button class="ghost" id="btn-interest">Apply Interest</button>':'<button class="ghost" disabled style="opacity:.4">No Interest</button>'}
+      <div class="btn-row">
+        <button class="btn" id="btn-deposit">Deposit</button>
+        <button class="btn ghost" id="btn-withdraw">Withdraw</button>
+        ${isSavings
+          ? '<button class="btn ghost" id="btn-interest">Interest</button>'
+          : '<button class="btn ghost" disabled style="opacity:.4;cursor:not-allowed">—</button>'}
       </div>
-      <button class="danger tiny" id="btn-close" style="margin-bottom:14px">Close Account</button>
+      <button class="btn danger" id="btn-close-acct">Close Account</button>
       <div class="history">
-        <div style="font-size:12px;color:var(--ink-dim);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em">Transaction History</div>
-        ${a.history.slice().reverse().map(tx=>`
-          <div class="tx">
-            <div>
-              <span class="tx-type ${tx.type}">${tx.type.replace('_',' ')}</span>
-              <div class="tx-meta">${new Date(tx.timestamp).toLocaleString()}${tx.note?' · '+escapeHtml(tx.note):''}</div>
+        <div class="history-title">Transaction History</div>
+        ${(a.history||[]).slice().reverse().map(tx=>{
+          const pos = tx.type==='deposit'||tx.type==='interest';
+          return `
+            <div class="tx">
+              <div>
+                <span class="tx-type ${tx.type}">${tx.type.replace('_',' ')}</span>
+                <div class="tx-meta">${new Date(tx.timestamp).toLocaleString()}${tx.note?' · '+escapeHtml(tx.note):''}</div>
+              </div>
+              <div>
+                <div class="tx-amt ${pos?'pos':'neg'}">${pos?'+':'-'}${money(tx.amount).replace('$','$')}</div>
+                <div class="tx-meta" style="text-align:right">Bal ${money(tx.balance_after)}</div>
+              </div>
             </div>
-            <div>
-              <div class="tx-amt" style="text-align:right">${tx.type==='withdrawal'||tx.type==='overdraft_fee'?'-':'+'}$${tx.amount.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-              <div class="tx-meta" style="text-align:right">Bal $${tx.balance_after.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}</div>
-            </div>
-          </div>
-        `).join('')}
+          `;
+        }).join('') || '<div class="empty">No transactions yet.</div>'}
       </div>
     `;
-    $('#btn-deposit').addEventListener('click', ()=>txn('deposit'));
-    $('#btn-withdraw').addEventListener('click', ()=>txn('withdraw'));
-    if(isSavings) $('#btn-interest').addEventListener('click', applyInterest);
-    $('#btn-close').addEventListener('click', closeAccount);
-  }catch(e){ toast(e.message,'error'); }
+    $('#btn-deposit').onclick  = ()=> txn('deposit');
+    $('#btn-withdraw').onclick = ()=> txn('withdraw');
+    if(isSavings) $('#btn-interest').onclick = applyInterest;
+    $('#btn-close-acct').onclick = closeAccount;
+  }catch(e){
+    toast(e.message,'error');
+  }
 }
 
 async function txn(kind){
@@ -312,27 +800,39 @@ async function txn(kind){
   if(!amt||amt<=0) return toast('Enter a positive amount','error');
   try{
     await api(`/accounts/${selectedId}/${kind}`, {method:'POST', body:JSON.stringify({amount:amt})});
-    toast(`${kind==='deposit'?'Deposited':'Withdrew'} $${amt.toFixed(2)}`,'success');
-    loadAll();
+    toast(`${kind==='deposit'?'Deposited':'Withdrew'} ${money(amt)}`,'success');
+    await loadAll();
   }catch(e){ toast(e.message,'error'); }
 }
 async function applyInterest(){
   try{
     await api(`/accounts/${selectedId}/apply-interest`, {method:'POST'});
     toast('Interest applied','success');
-    loadAll();
+    await loadAll();
   }catch(e){ toast(e.message,'error'); }
 }
 async function closeAccount(){
   if(!confirm('Close this account? This cannot be undone.')) return;
   try{
     await api('/accounts/'+selectedId, {method:'DELETE'});
-    selectedId = null;
-    $('#detail').innerHTML = '<div class="empty">← Select or open an account to see details</div>';
     toast('Account closed','success');
-    loadAll();
+    closeSheet();
+    await loadAll();
   }catch(e){ toast(e.message,'error'); }
 }
+
+// ── Modal (open account) ──────────────────────────────
+function openModal(){ $('#modal').classList.add('open'); $('#holder').focus(); }
+function closeModal(){ $('#modal').classList.remove('open'); }
+
+$('#open-modal-btn').addEventListener('click', openModal);
+$('#modal-close').addEventListener('click', closeModal);
+$('#modal').addEventListener('click', (e)=>{ if(e.target.id==='modal') closeModal(); });
+$('#overlay').addEventListener('click', closeSheet);
+$('#sheet-close').addEventListener('click', closeSheet);
+$('#view-all-btn').addEventListener('click', ()=>{
+  document.querySelector('.bills').scrollIntoView({behavior:'smooth', block:'center'});
+});
 
 $('#create-btn').addEventListener('click', async ()=>{
   const holder = $('#holder').value.trim();
@@ -344,16 +844,51 @@ $('#create-btn').addEventListener('click', async ()=>{
       account_holder:holder, account_type:type, initial_balance:initial
     })});
     $('#holder').value=''; $('#initial').value='0';
-    selectedId = a.account_id;
+    closeModal();
     toast('Account opened','success');
-    loadAll();
+    await loadAll();
+    openSheet(a.account_id);
   }catch(e){ toast(e.message,'error'); }
 });
 
-function escapeHtml(s){return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+// Apply interest to all savings accounts
+$('#apply-all-btn').addEventListener('click', async ()=>{
+  const savings = accounts.filter(a=>a.account_type==='savings');
+  if(!savings.length) return toast('No savings accounts to apply interest to','error');
+  try{
+    await Promise.all(savings.map(a =>
+      api(`/accounts/${a.account_id}/apply-interest`, {method:'POST'})
+    ));
+    toast(`Interest applied to ${savings.length} savings account${savings.length>1?'s':''}`,'success');
+    await loadAll();
+  }catch(e){ toast(e.message,'error'); }
+});
+
+// Tabs
+$('#tabs').addEventListener('click', (e)=>{
+  if(!e.target.matches('.tab')) return;
+  $$('#tabs .tab').forEach(t=>t.classList.remove('active'));
+  e.target.classList.add('active');
+  activeTab = e.target.dataset.tab;
+  renderChart();
+});
+
+// Search
+$('#search').addEventListener('input', (e)=>{
+  searchQuery = e.target.value;
+  renderBills();
+});
+
+// Keyboard
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='Escape'){
+    if($('#modal').classList.contains('open')) closeModal();
+    else if($('#sheet').classList.contains('open')) closeSheet();
+  }
+});
 
 loadAll();
-setInterval(loadAll, 15000);
+setInterval(loadAll, 20000);
 </script>
 </body>
 </html>
