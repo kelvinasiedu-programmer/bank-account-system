@@ -1,4 +1,5 @@
 """Tests for the Bank service — persistence & orchestration."""
+
 from __future__ import annotations
 
 import pytest

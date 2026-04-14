@@ -1,7 +1,8 @@
 """Pydantic request/response schemas for the Bank API."""
+
 from __future__ import annotations
 
-from typing import List, Literal, Optional
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -31,9 +32,9 @@ class AccountOut(BaseModel):
     account_type: str
     account_holder: str
     balance: float
-    history: List[TransactionOut] = []
-    overdraft_limit: Optional[float] = None
-    overdraft_fee: Optional[float] = None
+    history: list[TransactionOut] = []
+    overdraft_limit: float | None = None
+    overdraft_fee: float | None = None
 
 
 class AccountSummary(BaseModel):

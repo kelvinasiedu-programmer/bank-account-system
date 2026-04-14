@@ -1,4 +1,5 @@
 """Integration tests for the FastAPI endpoints."""
+
 from __future__ import annotations
 
 import pytest
