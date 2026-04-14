@@ -1,0 +1,26 @@
+[project]
+name = "bank-account-system"
+version = "1.0.0"
+description = "Production-grade OOP banking system with tiered-interest savings and overdraft-enabled checking"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Kelvin Asiedu" }]
+keywords = ["banking", "oop", "fastapi", "fintech", "python"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra --strict-markers"
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["src/__init__.py"]

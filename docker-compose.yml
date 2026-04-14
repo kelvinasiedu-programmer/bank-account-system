@@ -1,0 +1,12 @@
+services:
+  api:
+    build: .
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./data:/app/data
+    env_file:
+      - .env
+    environment:
+      - STORAGE_PATH=/app/data/accounts.json
+    restart: unless-stopped
