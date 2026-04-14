@@ -1,4 +1,5 @@
 """Unit tests for the BankAccount / SavingsAccount / CheckingAccount domain."""
+
 from __future__ import annotations
 
 import pytest
@@ -52,11 +53,11 @@ class TestSavingsAccount:
     @pytest.mark.parametrize(
         "bal,expected",
         [
-            (500, 515.0),         # 3% tier
-            (1_000, 1_030.0),     # 3% tier boundary
-            (2_000, 2_100.0),     # 5% tier
-            (5_000, 5_250.0),     # 5% tier boundary
-            (10_000, 10_700.0),   # 7% tier
+            (500, 515.0),  # 3% tier
+            (1_000, 1_030.0),  # 3% tier boundary
+            (2_000, 2_100.0),  # 5% tier
+            (5_000, 5_250.0),  # 5% tier boundary
+            (10_000, 10_700.0),  # 7% tier
         ],
     )
     def test_apply_interest_tiered(self, bal, expected):

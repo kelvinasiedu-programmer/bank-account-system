@@ -10,19 +10,17 @@ Classes:
     SavingsAccount   — applies tiered interest (3%, 5%, 7%)
     CheckingAccount  — allows overdraft up to a configurable limit with a fee
 """
+
 from __future__ import annotations
 
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from typing import List, Literal
+from typing import Literal
 
 from src.config import settings
 
-
-TransactionType = Literal[
-    "deposit", "withdrawal", "interest", "overdraft_fee", "open"
-]
+TransactionType = Literal["deposit", "withdrawal", "interest", "overdraft_fee", "open"]
 
 
 @dataclass(frozen=True)
@@ -63,7 +61,7 @@ class BankAccount:
         self.account_id: str = account_id or str(uuid.uuid4())
         self.account_holder: str = account_holder.strip()
         self.balance: float = float(initial_balance)
-        self.history: List[Transaction] = [
+        self.history: list[Transaction] = [
             Transaction(
                 type="open",
                 amount=float(initial_balance),
@@ -183,8 +181,7 @@ class CheckingAccount(BankAccount):
         new_balance = self.balance - float(amount)
         if new_balance < self.overdraft_limit:
             raise ValueError(
-                f"Withdrawal would exceed overdraft limit of "
-                f"${self.overdraft_limit:.2f}."
+                f"Withdrawal would exceed overdraft limit of ${self.overdraft_limit:.2f}."
             )
         self.balance = new_balance
         tx = Transaction(type="withdrawal", amount=float(amount), balance_after=self.balance)

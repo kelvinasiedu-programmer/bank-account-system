@@ -1,10 +1,10 @@
 """FastAPI application entrypoint for the Bank Account System."""
+
 from __future__ import annotations
 
 import time
 from collections import defaultdict, deque
 from pathlib import Path
-from typing import Deque, Dict, List
 
 from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -24,7 +24,6 @@ from src.schemas import (
     StatsOut,
 )
 
-
 # ---------- app ----------
 app = FastAPI(
     title=settings.api_title,
@@ -42,7 +41,7 @@ app.add_middleware(
 
 
 # ---------- rate limiting ----------
-_request_log: Dict[str, Deque[float]] = defaultdict(deque)
+_request_log: dict[str, deque[float]] = defaultdict(deque)
 
 
 @app.middleware("http")
@@ -86,9 +85,7 @@ def health() -> HealthOut:
     status_code=status.HTTP_201_CREATED,
     tags=["accounts"],
 )
-def create_account(
-    payload: CreateAccountRequest, bank: Bank = Depends(get_bank)
-) -> AccountOut:
+def create_account(payload: CreateAccountRequest, bank: Bank = Depends(get_bank)) -> AccountOut:
     try:
         acc = bank.create_account(
             account_type=payload.account_type,
@@ -100,8 +97,8 @@ def create_account(
     return AccountOut(**acc.to_dict())
 
 
-@app.get(f"{API}/accounts", response_model=List[AccountSummary], tags=["accounts"])
-def list_accounts(bank: Bank = Depends(get_bank)) -> List[AccountSummary]:
+@app.get(f"{API}/accounts", response_model=list[AccountSummary], tags=["accounts"])
+def list_accounts(bank: Bank = Depends(get_bank)) -> list[AccountSummary]:
     return [
         AccountSummary(
             account_id=a.account_id,
@@ -113,9 +110,7 @@ def list_accounts(bank: Bank = Depends(get_bank)) -> List[AccountSummary]:
     ]
 
 
-@app.get(
-    f"{API}/accounts/{{account_id}}", response_model=AccountOut, tags=["accounts"]
-)
+@app.get(f"{API}/accounts/{{account_id}}", response_model=AccountOut, tags=["accounts"])
 def get_account(account_id: str, bank: Bank = Depends(get_bank)) -> AccountOut:
     try:
         acc = bank.get(account_id)
@@ -142,9 +137,7 @@ def delete_account(account_id: str, bank: Bank = Depends(get_bank)) -> MessageOu
     response_model=AccountOut,
     tags=["transactions"],
 )
-def deposit(
-    account_id: str, body: AmountRequest, bank: Bank = Depends(get_bank)
-) -> AccountOut:
+def deposit(account_id: str, body: AmountRequest, bank: Bank = Depends(get_bank)) -> AccountOut:
     try:
         acc = bank.deposit(account_id, body.amount)
     except AccountNotFoundError as e:
@@ -159,9 +152,7 @@ def deposit(
     response_model=AccountOut,
     tags=["transactions"],
 )
-def withdraw(
-    account_id: str, body: AmountRequest, bank: Bank = Depends(get_bank)
-) -> AccountOut:
+def withdraw(account_id: str, body: AmountRequest, bank: Bank = Depends(get_bank)) -> AccountOut:
     try:
         acc = bank.withdraw(account_id, body.amount)
     except AccountNotFoundError as e:

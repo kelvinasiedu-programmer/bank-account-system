@@ -4,13 +4,13 @@ Bank — in-memory account registry with JSON persistence.
 Provides a thin service layer over the account domain model so the
 FastAPI routes stay lean and free of storage concerns.
 """
+
 from __future__ import annotations
 
 import json
 import os
 import threading
 from pathlib import Path
-from typing import Dict, List
 
 from src.accounts import (
     BankAccount,
@@ -30,7 +30,7 @@ class Bank:
     def __init__(self, storage_path: str) -> None:
         self.storage_path = Path(storage_path)
         self._lock = threading.RLock()
-        self._accounts: Dict[str, BankAccount] = {}
+        self._accounts: dict[str, BankAccount] = {}
         self._load()
 
     # ---------- persistence ----------
@@ -67,8 +67,7 @@ class Bank:
                 acc = CheckingAccount(account_holder, initial_balance)
             else:
                 raise ValueError(
-                    f"Unknown account type '{account_type}'. "
-                    "Use 'savings' or 'checking'."
+                    f"Unknown account type '{account_type}'. Use 'savings' or 'checking'."
                 )
             self._accounts[acc.account_id] = acc
             self._save()
@@ -81,7 +80,7 @@ class Bank:
                 raise AccountNotFoundError(account_id)
             return acc
 
-    def list_accounts(self) -> List[BankAccount]:
+    def list_accounts(self) -> list[BankAccount]:
         with self._lock:
             return list(self._accounts.values())
 
