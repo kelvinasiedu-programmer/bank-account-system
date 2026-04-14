@@ -8,47 +8,34 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
+  /* Flat theme — one background, one accent. */
   :root{
-    --bg:#0B0B12;
-    --bg-2:#11111C;
-    --panel:#15152380;
-    --panel-solid:#161626;
-    --border:#242438;
-    --border-hi:#33334d;
+    --bg:#0F0F12;
+    --surface:#16161B;
+    --border:#262630;
+    --border-hi:#3A3A46;
     --ink:#ECECF1;
-    --ink-dim:#A0A0B2;
-    --ink-mute:#6B6B82;
+    --ink-dim:#9A9AA6;
+    --ink-mute:#6A6A76;
     --accent:#7C5CFC;
-    --accent-lt:#A78BFA;
-    --accent-glow:rgba(124,92,252,.35);
-    --good:#34D399;
-    --good-glow:rgba(52,211,153,.25);
-    --warn:#F59E0B;
-    --bad:#F87171;
-    --bad-glow:rgba(248,113,113,.25);
-    --radius:14px;
+    --radius:10px;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;height:100%}
   body{
     font-family:'Inter',system-ui,sans-serif;
-    background:
-      radial-gradient(1100px 600px at 15% -5%, rgba(124,92,252,.18), transparent 60%),
-      radial-gradient(900px 500px at 100% 10%, rgba(167,139,250,.10), transparent 55%),
-      linear-gradient(180deg,#0B0B12 0%, #0A0A10 100%);
+    background:var(--bg);
     color:var(--ink);
     min-height:100vh;
     letter-spacing:-0.01em;
   }
   .shell{max-width:1200px;margin:0 auto;padding:32px 28px 80px}
-  /* header */
   header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
   .brand{display:flex;align-items:center;gap:12px}
   .logo{
-    width:42px;height:42px;border-radius:12px;
-    background:linear-gradient(135deg,var(--accent),var(--accent-lt));
+    width:42px;height:42px;border-radius:var(--radius);
+    background:var(--accent);
     display:grid;place-items:center;font-weight:800;color:#fff;
-    box-shadow:0 10px 30px var(--accent-glow);
     font-family:'JetBrains Mono',monospace;font-size:18px;
   }
   .brand h1{margin:0;font-size:20px;font-weight:700;letter-spacing:-0.02em}
@@ -57,60 +44,53 @@
     display:inline-flex;align-items:center;gap:8px;
     padding:7px 14px;border:1px solid var(--border);
     border-radius:999px;font-size:12px;color:var(--ink-dim);
-    background:var(--panel);backdrop-filter:blur(8px);
+    background:var(--surface);
   }
-  .dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 10px var(--good)}
-  /* cards */
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
   .grid{display:grid;grid-template-columns:1.1fr 1fr;gap:20px}
   @media (max-width:900px){.grid{grid-template-columns:1fr}}
   .card{
-    background:var(--panel);border:1px solid var(--border);
-    border-radius:var(--radius);padding:22px;backdrop-filter:blur(14px);
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);padding:22px;
   }
   .card h2{margin:0 0 4px;font-size:15px;font-weight:600;letter-spacing:-0.01em}
   .card .sub{color:var(--ink-dim);font-size:12px;margin-bottom:18px}
-  /* stats strip */
   .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
   @media (max-width:700px){.stats{grid-template-columns:repeat(2,1fr)}}
   .stat{
-    background:var(--panel);border:1px solid var(--border);
+    background:var(--surface);border:1px solid var(--border);
     border-radius:var(--radius);padding:16px;
   }
   .stat .k{color:var(--ink-mute);font-size:11px;text-transform:uppercase;letter-spacing:0.08em}
   .stat .v{margin-top:6px;font-size:22px;font-weight:700;font-family:'JetBrains Mono',monospace}
-  .stat.accent .v{color:var(--accent-lt)}
-  /* form */
+  .stat.accent .v{color:var(--accent)}
   .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   label{display:block;font-size:12px;color:var(--ink-dim);margin-bottom:6px}
   input, select{
-    width:100%;padding:11px 13px;border-radius:10px;
-    background:#0E0E1A;color:var(--ink);
+    width:100%;padding:11px 13px;border-radius:var(--radius);
+    background:var(--bg);color:var(--ink);
     border:1px solid var(--border);font-size:14px;
-    font-family:inherit;transition:all .15s;
+    font-family:inherit;transition:border-color .15s;
   }
-  input:focus, select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+  input:focus, select:focus{outline:none;border-color:var(--accent)}
   .field{margin-bottom:14px}
   button{
-    width:100%;padding:12px 16px;border:none;border-radius:10px;
-    background:linear-gradient(135deg,var(--accent) 0%,var(--accent-lt) 100%);
-    color:#fff;font-weight:600;font-size:14px;cursor:pointer;
-    font-family:inherit;transition:transform .1s, box-shadow .15s;
-    box-shadow:0 10px 24px var(--accent-glow);
+    width:100%;padding:12px 16px;border:none;border-radius:var(--radius);
+    background:var(--accent);color:#fff;font-weight:600;font-size:14px;
+    cursor:pointer;font-family:inherit;transition:filter .15s;
   }
-  button:hover{transform:translateY(-1px)}
-  button:active{transform:translateY(0)}
-  button.ghost{background:transparent;border:1px solid var(--border-hi);color:var(--ink);box-shadow:none}
-  button.ghost:hover{border-color:var(--accent);color:var(--accent-lt)}
-  button.danger{background:linear-gradient(135deg,#ef4444 0%,#f87171 100%);box-shadow:0 10px 24px var(--bad-glow)}
-  button.tiny{width:auto;padding:7px 11px;font-size:12px;border-radius:8px}
-  /* accounts list */
+  button:hover{filter:brightness(1.1)}
+  button.ghost{background:transparent;border:1px solid var(--border-hi);color:var(--ink)}
+  button.ghost:hover{border-color:var(--accent);color:var(--accent);filter:none}
+  button.danger{background:#E05858}
+  button.tiny{width:auto;padding:7px 11px;font-size:12px}
   .accts{display:flex;flex-direction:column;gap:10px;max-height:460px;overflow:auto;padding-right:4px}
   .acct{
-    border:1px solid var(--border);border-radius:12px;padding:14px;
-    background:#0E0E1A;cursor:pointer;transition:all .15s;
+    border:1px solid var(--border);border-radius:var(--radius);padding:14px;
+    background:var(--bg);cursor:pointer;transition:border-color .15s;
   }
-  .acct:hover{border-color:var(--accent);transform:translateY(-1px)}
-  .acct.selected{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+  .acct:hover{border-color:var(--accent)}
+  .acct.selected{border-color:var(--accent)}
   .acct-row{display:flex;justify-content:space-between;align-items:center;gap:10px}
   .acct-name{font-weight:600;font-size:14px}
   .acct-type{
@@ -118,12 +98,11 @@
     font-size:10px;letter-spacing:0.08em;text-transform:uppercase;
     border-radius:999px;border:1px solid var(--border-hi);color:var(--ink-dim);
   }
-  .acct-type.savings{color:var(--good);border-color:var(--good)}
-  .acct-type.checking{color:var(--accent-lt);border-color:var(--accent-lt)}
+  .acct-type.savings{color:var(--accent);border-color:var(--accent)}
+  .acct-type.checking{color:var(--ink);border-color:var(--border-hi)}
   .acct-balance{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700}
-  .acct-balance.neg{color:var(--bad)}
+  .acct-balance.neg{color:#E05858}
   .acct-id{color:var(--ink-mute);font-size:11px;font-family:'JetBrains Mono',monospace;margin-top:6px}
-  /* detail panel */
   .detail{min-height:300px}
   .detail .empty{color:var(--ink-mute);font-size:13px;text-align:center;padding:50px 0}
   .detail .selected-head{margin-bottom:14px}
@@ -142,29 +121,27 @@
     font-size:10px;letter-spacing:0.08em;text-transform:uppercase;
     padding:3px 8px;border-radius:999px;border:1px solid var(--border-hi);color:var(--ink-dim);
   }
-  .tx-type.deposit{color:var(--good);border-color:var(--good)}
-  .tx-type.withdrawal{color:var(--warn);border-color:var(--warn)}
-  .tx-type.interest{color:var(--accent-lt);border-color:var(--accent-lt)}
-  .tx-type.overdraft_fee{color:var(--bad);border-color:var(--bad)}
-  .tx-type.open{color:var(--ink-dim)}
+  .tx-type.deposit{color:var(--accent);border-color:var(--accent)}
+  .tx-type.interest{color:var(--accent);border-color:var(--accent)}
+  .tx-type.withdrawal{color:var(--ink);border-color:var(--border-hi)}
+  .tx-type.overdraft_fee{color:#E05858;border-color:#E05858}
+  .tx-type.open{color:var(--ink-mute)}
   .tx-amt{font-family:'JetBrains Mono',monospace;font-weight:600}
   .tx-meta{color:var(--ink-mute);font-size:11px;margin-top:2px}
-  /* toast */
   .toast{
     position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-    padding:12px 18px;border-radius:10px;background:#1A1A2E;
+    padding:12px 18px;border-radius:var(--radius);background:var(--surface);
     border:1px solid var(--border);font-size:13px;z-index:1000;
-    box-shadow:0 10px 30px rgba(0,0,0,.4);opacity:0;transition:opacity .2s;
+    opacity:0;transition:opacity .2s;
   }
   .toast.show{opacity:1}
-  .toast.error{border-color:var(--bad);color:var(--bad)}
-  .toast.success{border-color:var(--good);color:var(--good)}
-  /* scrollbar */
+  .toast.error{border-color:#E05858;color:#E05858}
+  .toast.success{border-color:var(--accent);color:var(--accent)}
   ::-webkit-scrollbar{width:8px;height:8px}
-  ::-webkit-scrollbar-thumb{background:#2a2a40;border-radius:4px}
-  ::-webkit-scrollbar-thumb:hover{background:#3a3a5a}
+  ::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:4px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--accent)}
   footer{margin-top:40px;text-align:center;color:var(--ink-mute);font-size:12px}
-  footer a{color:var(--accent-lt);text-decoration:none}
+  footer a{color:var(--accent);text-decoration:none}
 </style>
 </head>
 <body>
@@ -294,7 +271,7 @@ async function loadDetail(id){
       </div>
       <div class="stat" style="margin-bottom:14px">
         <div class="k">Current Balance</div>
-        <div class="v ${a.balance<0?'':'accent'}" style="color:${a.balance<0?'var(--bad)':'var(--accent-lt)'}">
+        <div class="v ${a.balance<0?'':'accent'}" style="color:${a.balance<0?'#E05858':'var(--accent)'}">
           $${a.balance.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})}
         </div>
       </div>
