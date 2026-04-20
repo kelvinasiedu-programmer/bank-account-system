@@ -33,7 +33,6 @@ class Bank:
         self._accounts: dict[str, BankAccount] = {}
         self._load()
 
-    # ---------- persistence ----------
     def _load(self) -> None:
         if not self.storage_path.exists():
             return
@@ -55,7 +54,6 @@ class Bank:
             json.dump(payload, f, indent=2)
         os.replace(tmp, self.storage_path)
 
-    # ---------- CRUD ----------
     def create_account(
         self, account_type: str, account_holder: str, initial_balance: float = 0.0
     ) -> BankAccount:
@@ -96,7 +94,6 @@ class Bank:
             self._accounts.clear()
             self._save()
 
-    # ---------- operations ----------
     def deposit(self, account_id: str, amount: float) -> BankAccount:
         with self._lock:
             acc = self.get(account_id)
@@ -120,7 +117,6 @@ class Bank:
             self._save()
             return acc
 
-    # ---------- aggregate stats ----------
     def stats(self) -> dict:
         with self._lock:
             accounts = list(self._accounts.values())
