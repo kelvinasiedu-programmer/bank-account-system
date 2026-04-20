@@ -70,7 +70,6 @@ class BankAccount:
             )
         ]
 
-    # ---------- core operations ----------
     def deposit(self, amount: float) -> Transaction:
         """Deposit a positive amount into the account."""
         if amount is None or amount <= 0:
@@ -95,7 +94,6 @@ class BankAccount:
         """Return the current balance."""
         return self.balance
 
-    # ---------- serialization ----------
     def to_dict(self) -> dict:
         """Serialize to a JSON-safe dict."""
         return {
