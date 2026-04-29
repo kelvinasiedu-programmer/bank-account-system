@@ -1,4 +1,4 @@
-"""Tests for the Bank service — persistence & orchestration."""
+"""Tests for the Bank service: persistence and orchestration."""
 
 from __future__ import annotations
 

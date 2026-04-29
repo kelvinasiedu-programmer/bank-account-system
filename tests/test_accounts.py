@@ -48,7 +48,7 @@ class TestBankAccount:
             acc.withdraw(100)
 
 
-# ---------- SavingsAccount — tiered interest ----------
+# ---------- SavingsAccount: tiered interest ----------
 class TestSavingsAccount:
     @pytest.mark.parametrize(
         "bal,expected",
@@ -77,7 +77,7 @@ class TestSavingsAccount:
         assert SavingsAccount("X", 10000).preview_rate() == 0.07
 
 
-# ---------- CheckingAccount — overdraft ----------
+# ---------- CheckingAccount: overdraft ----------
 class TestCheckingAccount:
     def test_withdraw_within_balance(self):
         c = CheckingAccount("Alex", 500)
@@ -108,3 +108,23 @@ class TestCheckingAccount:
         assert d["account_type"] == "checking"
         assert d["overdraft_limit"] == -500.0
         assert d["overdraft_fee"] == 25.0
+
+
+# ---------- Decimal precision (no float drift) ----------
+class TestDecimalPrecision:
+    def test_repeated_dime_deposits_do_not_drift(self):
+        """Naive float arithmetic produces 0.30000000000000004 here."""
+        from decimal import Decimal
+
+        acc = BankAccount("Drifter", 0)
+        for _ in range(3):
+            acc.deposit(0.1)
+        assert acc.balance == Decimal("0.30")
+
+    def test_thousand_penny_deposits_sum_exactly(self):
+        from decimal import Decimal
+
+        acc = BankAccount("Penny", 0)
+        for _ in range(1000):
+            acc.deposit(0.01)
+        assert acc.balance == Decimal("10.00")

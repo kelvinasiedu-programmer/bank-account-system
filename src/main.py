@@ -24,6 +24,7 @@ from src.schemas import (
     StatsOut,
 )
 
+# ---------- app ----------
 app = FastAPI(
     title=settings.api_title,
     version=settings.api_version,
@@ -39,6 +40,7 @@ app.add_middleware(
 )
 
 
+# ---------- rate limiting ----------
 _request_log: dict[str, deque[float]] = defaultdict(deque)
 
 
@@ -60,13 +62,18 @@ async def rate_limit(request: Request, call_next):
     return await call_next(request)
 
 
-_bank = Bank(storage_path=settings.storage_path)
+# ---------- bank dependency ----------
+_bank = Bank(
+    storage_path=settings.storage_path,
+    seed_if_empty=settings.seed_demo_data,
+)
 
 
 def get_bank() -> Bank:
     return _bank
 
 
+# ---------- routes ----------
 API = "/api/v1"
 
 
@@ -184,6 +191,7 @@ def clear_all(bank: Bank = Depends(get_bank)) -> MessageOut:
     return MessageOut(message="All accounts cleared.")
 
 
+# ---------- static UI ----------
 STATIC_DIR = Path(__file__).parent / "static"
 if STATIC_DIR.exists():
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
