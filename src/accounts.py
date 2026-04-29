@@ -20,7 +20,7 @@ from __future__ import annotations
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import ROUND_HALF_UP, Decimal
 from typing import Literal
 
 from src.config import settings
@@ -32,10 +32,7 @@ _CENTS = Decimal("0.01")
 
 def _money(amount) -> Decimal:
     """Coerce any numeric input to a 2-decimal Decimal for monetary math."""
-    if isinstance(amount, Decimal):
-        d = amount
-    else:
-        d = Decimal(str(amount))
+    d = amount if isinstance(amount, Decimal) else Decimal(str(amount))
     return d.quantize(_CENTS, rounding=ROUND_HALF_UP)
 
 
