@@ -1,5 +1,5 @@
 """
-Bank — in-memory account registry with JSON persistence.
+Bank: in-memory account registry with JSON persistence.
 
 Provides a thin service layer over the account domain model so the
 FastAPI routes stay lean and free of storage concerns.
@@ -10,6 +10,7 @@ from __future__ import annotations
 import json
 import os
 import threading
+from decimal import Decimal
 from pathlib import Path
 
 from src.accounts import (
@@ -27,11 +28,38 @@ class AccountNotFoundError(KeyError):
 class Bank:
     """Thread-safe in-memory bank with JSON-backed persistence."""
 
-    def __init__(self, storage_path: str) -> None:
+    def __init__(self, storage_path: str, seed_if_empty: bool = False) -> None:
         self.storage_path = Path(storage_path)
         self._lock = threading.RLock()
         self._accounts: dict[str, BankAccount] = {}
         self._load()
+        if seed_if_empty and not self._accounts:
+            self._seed_demo_data()
+
+    def _seed_demo_data(self) -> None:
+        """Populate a few demo accounts with transaction history.
+
+        Runs only when the store is empty so a recruiter hitting the live
+        demo sees something useful in the first 5 seconds instead of a
+        blank dashboard.
+        """
+        jane = SavingsAccount("Jane Doe", 5500.00)
+        jane.deposit(250.00)
+        jane.apply_interest()
+        jane.deposit(125.50)
+
+        john = CheckingAccount("John Smith", 1200.00)
+        john.deposit(450.00)
+        john.withdraw(80.00)
+        john.withdraw(300.00)
+
+        maria = SavingsAccount("Maria Chen", 850.00)
+        maria.deposit(150.00)
+        maria.apply_interest()
+
+        for acc in (jane, john, maria):
+            self._accounts[acc.account_id] = acc
+        self._save()
 
     def _load(self) -> None:
         if not self.storage_path.exists():
@@ -43,7 +71,7 @@ class Bank:
                 account = account_from_dict(acc)
                 self._accounts[account.account_id] = account
         except (json.JSONDecodeError, OSError, KeyError):
-            # Corrupt or missing data — start fresh rather than crash.
+            # Corrupt or missing data: start fresh rather than crash.
             self._accounts = {}
 
     def _save(self) -> None:
@@ -126,5 +154,5 @@ class Bank:
                 "total_accounts": len(accounts),
                 "savings_accounts": len(savings),
                 "checking_accounts": len(checking),
-                "total_assets": round(sum(a.balance for a in accounts), 2),
+                "total_assets": float(sum((a.balance for a in accounts), start=Decimal("0.00"))),
             }

@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Ledger — Bank Account System</title>
+<title>Ledger: Bank Account System</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  /* Flat fintech theme — one background, one lime accent. */
+  /* Flat fintech theme: one background, one lime accent. */
   :root{
     --bg:#0B0C0E;
     --surface:#14161A;
@@ -392,7 +392,7 @@
     <div class="kpi">
       <div class="k">Total Accounts</div>
       <div class="v" id="k-total">0</div>
-      <span class="delta" id="k-total-delta">—</span>
+      <span class="delta" id="k-total-delta">·</span>
     </div>
     <div class="kpi">
       <div class="k">Savings</div>
@@ -667,7 +667,7 @@ function renderChart(){
 
   const el = $('#chart');
   if(!recent.length){
-    el.innerHTML = `<div class="empty" style="flex:1;padding:40px 0">No transactions yet — open an account to get started.</div>`;
+    el.innerHTML = `<div class="empty" style="flex:1;padding:40px 0">No transactions yet. Open an account to get started.</div>`;
     return;
   }
   const max = Math.max(...recent.map(t=>t.amount), 1);
@@ -764,7 +764,7 @@ async function loadSheet(id){
         <button class="btn ghost" id="btn-withdraw">Withdraw</button>
         ${isSavings
           ? '<button class="btn ghost" id="btn-interest">Interest</button>'
-          : '<button class="btn ghost" disabled style="opacity:.4;cursor:not-allowed">—</button>'}
+          : '<button class="btn ghost" disabled style="opacity:.4;cursor:not-allowed">Interest n/a</button>'}
       </div>
       <button class="btn danger" id="btn-close-acct">Close Account</button>
       <div class="history">

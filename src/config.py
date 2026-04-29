@@ -17,14 +17,15 @@ class Settings(BaseSettings):
     api_title: str = "Bank Account System API"
     api_version: str = "1.0.0"
     api_description: str = (
-        "Production-grade OOP banking system with tiered-interest savings "
-        "and overdraft-enabled checking accounts."
+        "OOP banking service with tiered-interest savings and overdraft-enabled "
+        "checking accounts. Money handled with decimal.Decimal."
     )
 
     # Persistence
     storage_path: str = "data/accounts.json"
+    seed_demo_data: bool = True
 
-    # Banking rules — tiered interest
+    # Banking rules: tiered interest
     tier_1_limit: float = 1000.0
     tier_1_rate: float = 0.03
     tier_2_limit: float = 5000.0
