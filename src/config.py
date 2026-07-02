@@ -40,8 +40,14 @@ class Settings(BaseSettings):
     rate_limit_requests: int = 30
     rate_limit_window_seconds: int = 60
 
-    # CORS
+    # CORS. Default to same-origin only; set explicit origins in production.
+    # A "*" entry allows any origin but forces credentials off (see main.py).
     cors_origins: list[str] = ["*"]
+
+    # Auth. When set, destructive endpoints require this key in the X-API-Key
+    # header. Left unset, those endpoints fail closed (503) so the public demo
+    # can never be wiped by an anonymous caller.
+    admin_api_key: str | None = None
 
 
 settings = Settings()
